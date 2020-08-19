@@ -33,18 +33,22 @@
             QuestionScore,
             AddAnswerModal,
         },
+
         data() {
             return {
                 question: null,
                 answers: [],
                 questionId: this.$route.params.id,
+                answerCount: 0,
             }
         },
+
         computed: {
             hasAnswers() {
                 return this.question.answers.length > 0
             },
         },
+
         created() {
             this.$http
                 .get(`/api/question/${ this.questionId }`)
@@ -52,10 +56,12 @@
                     this.question = res.data
                 })
         },
+
         methods: {
             onReturnHome() {
                 this.$router.push({ name: 'Home' })
             },
+
             onAnswerAdded(answer) {
                 if (!this.question.answers.find(a => a.id === answer.id)) {
                     this.question.answers.push(answer)

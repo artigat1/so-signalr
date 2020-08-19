@@ -2,12 +2,27 @@
 
 export default {
     install(Vue) {
+        // use a new Vue instance as the interface for Vue components to receive/send SignalR events
+        // this way every component can listen to events or send new events using this.$questionHub
+        const questionHub = new Vue()
+        Vue.prototype.$questionHub = questionHub
+
         let startedPromise = null
 
         const connection = new HubConnectionBuilder()
             .withUrl(`${ Vue.prototype.$http.defaults.baseURL }/question-hub`)
             .configureLogging(LogLevel.Information)
             .build()
+
+        // Forward server side SignalR events through $questionHub, where components will listen to them
+        connection.on('QuestionScoreChange', (questionId, score) => {
+            questionHub.$emit('score-changed', { questionId, score })
+        })
+
+        // Forward server side SignalR events through $questionHub, where components will listen to them
+        connection.on('AnswerCountChange', (questionId, count) => {
+            questionHub.$emit('answer-count-changed', { questionId, count })
+        })
 
         function start () {
             startedPromise = connection.start().catch(err => {

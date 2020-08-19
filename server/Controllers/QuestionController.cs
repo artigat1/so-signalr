@@ -5,7 +5,10 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+    using Hubs;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using server.Models;
 
     [Route("api/[controller]")]
@@ -20,6 +23,12 @@
                 Answers = new List<Answer>{ new Answer { Body = "Sample answer" }}
             }
         };
+
+        private readonly IHubContext<QuestionHub, IQuestionHub> _hubContext;
+        public QuestionController(IHubContext<QuestionHub, IQuestionHub> questionHub)
+        {
+            this._hubContext = questionHub;
+        }
 
         [HttpGet()]
         public IEnumerable GetQuestions()
@@ -52,7 +61,7 @@
         }
 
         [HttpPost("{id}/answer")]
-        public ActionResult AddAnswerAsync(Guid id, [FromBody] Answer answer)
+        public async Task<ActionResult> AddAnswerAsync(Guid id, [FromBody] Answer answer)
         {
             var question = questions.SingleOrDefault(t => t.Id == id);
             if (question == null) return NotFound();
@@ -60,28 +69,46 @@
             answer.Id = Guid.NewGuid();
             answer.QuestionId = id;
             question.Answers.Add(answer);
+
+            await this._hubContext
+                .Clients
+                .All
+                .AnswerCountChange(question.Id, question.Answers.Count);
+
             return new JsonResult(answer);
         }
 
         [HttpPatch("{id}/upvote")]
-        public ActionResult UpVoteQuestionAsync(Guid id)
+        public async Task<ActionResult> UpVoteQuestionAsync(Guid id)
         {
             var question = questions.SingleOrDefault(t => t.Id == id);
             if (question == null) return NotFound();
 
             // Warning, this increment isnt thread-safe! Use Interlocked methods
             question.Score++;
+
+            await this._hubContext
+                .Clients
+                .All
+                .QuestionScoreChange(question.Id, question.Score);
+
             return new JsonResult(question);
         }
 
         [HttpPatch("{id}/downvote")]
-        public ActionResult DownVoteQuestionAsync(Guid id)
+        public  async Task<ActionResult> DownVoteQuestionAsync(Guid id)
         {
             var question = questions.SingleOrDefault(t => t.Id == id);
             if (question == null) return NotFound();
 
             // Warning, this decrement isnt thread-safe! Use Interlocked methods
             question.Score--;
+
+            await this._hubContext
+                .Clients
+                .All
+                .QuestionScoreChange(question.Id, question.Score);
+
             return new JsonResult(question);
         }
     }

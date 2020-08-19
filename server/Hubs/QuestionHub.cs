@@ -1,8 +1,10 @@
 ﻿namespace server.Hubs
 {
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.SignalR;
 
-    public class QuestionHub: Hub
+    /// <inheritdoc />
+    public class QuestionHub: Hub<IQuestionHub>
     {
     }
 }

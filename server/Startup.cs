@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 
 namespace server
 {
+    using Hubs;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,6 +29,7 @@ namespace server
         {
             services.AddControllers();
             services.AddCors();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +57,7 @@ namespace server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<QuestionHub>("/question-hub");
             });
         }
     }

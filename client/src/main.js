@@ -6,6 +6,7 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@fortawesome/fontawesome-free/css/all.css'
+import QuestionHub from './question-hub'
 
 Vue.config.productionTip = false
 
@@ -15,6 +16,8 @@ Vue.prototype.$http = axios
 
 // Install Vue extensions
 Vue.use(BootstrapVue)
+
+Vue.use(QuestionHub)
 
 new Vue({
     router,

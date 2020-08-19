@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\git-projects\\playground\\so-signalr\\so-signalr\\server\\server.csproj",
+      "projectUniqueName": "C:\\git-projects\\playground\\so-signalr\\server\\server.csproj",
       "projectName": "server",
-      "projectPath": "C:\\git-projects\\playground\\so-signalr\\so-signalr\\server\\server.csproj",
+      "projectPath": "C:\\git-projects\\playground\\so-signalr\\server\\server.csproj",
       "packagesPath": "C:\\Users\\artig\\.nuget\\packages\\",
-      "outputPath": "C:\\git-projects\\playground\\so-signalr\\so-signalr\\server\\obj\\",
+      "outputPath": "C:\\git-projects\\playground\\so-signalr\\server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\artig\\AppData\\Roaming\\NuGet\\NuGet.Config",

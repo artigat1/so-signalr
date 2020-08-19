@@ -20,8 +20,8 @@ export default {
         })
 
         // Forward server side SignalR events through $questionHub, where components will listen to them
-        connection.on('AnswerCountChange', (questionId, count) => {
-            questionHub.$emit('answer-count-changed', { questionId, count })
+        connection.on('AnswerCountChange', (questionId, answerCount) => {
+            questionHub.$emit('answer-count-changed', { questionId, answerCount })
         })
 
         function start () {

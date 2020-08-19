@@ -70,6 +70,7 @@
             answer.QuestionId = id;
             question.Answers.Add(answer);
 
+            // Notify every client
             await this._hubContext
                 .Clients
                 .All

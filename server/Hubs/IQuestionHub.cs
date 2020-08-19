@@ -7,6 +7,6 @@
     {
         Task QuestionScoreChange(Guid questionId, int score);
 
-        Task AnswerCountChange(Guid questionId, int count);
+        Task AnswerCountChange(Guid questionId, int answerCount);
     }
 }

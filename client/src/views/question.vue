@@ -54,7 +54,15 @@
                 .get(`/api/question/${ this.questionId }`)
                 .then(res => {
                     this.question = res.data
+                    return this.$questionHub.questionOpened(this.questionId)
                 })
+            this.$questionHub.$on('answer-added', this.onAnswerAdded)
+        },
+
+        beforeDestroy () {
+            // Notify the server we stopped watching the question
+            this.$questionHub.questionClosed(this.questionId)
+            this.$questionHub.$off('answer-added', this.onAnswerAdded)
         },
 
         methods: {

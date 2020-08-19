@@ -14,6 +14,8 @@ export default {
             .configureLogging(LogLevel.Information)
             .build()
 
+        // LISTENERS
+
         // Forward server side SignalR events through $questionHub, where components will listen to them
         connection.on('QuestionScoreChange', (questionId, score) => {
             questionHub.$emit('score-changed', { questionId, score })
@@ -23,6 +25,24 @@ export default {
         connection.on('AnswerCountChange', (questionId, answerCount) => {
             questionHub.$emit('answer-count-changed', { questionId, answerCount })
         })
+
+        connection.on('AnswerAdded', answer => {
+            questionHub.$emit('answer-added', answer)
+        })
+
+        questionHub.questionOpened = (questionId) => {
+            return startedPromise
+                .then(() => connection.invoke('JoinQuestionGroup', questionId))
+                .catch(console.error)
+        }
+
+        // EVENTS
+
+        questionHub.questionClosed = (questionId) => {
+            return startedPromise
+                .then(() => connection.invoke('LeaveQuestionGroup', questionId))
+                .catch(console.error)
+        }
 
         function start () {
             startedPromise = connection.start().catch(err => {

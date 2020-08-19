@@ -24,10 +24,10 @@
             }
         };
 
-        private readonly IHubContext<QuestionHub, IQuestionHub> _hubContext;
+        private readonly IHubContext<QuestionHub, IQuestionHub> hubContext;
         public QuestionController(IHubContext<QuestionHub, IQuestionHub> questionHub)
         {
-            this._hubContext = questionHub;
+            this.hubContext = questionHub;
         }
 
         [HttpGet()]
@@ -70,8 +70,13 @@
             answer.QuestionId = id;
             question.Answers.Add(answer);
 
+            await this.hubContext
+                .Clients
+                .Group(id.ToString())
+                .AnswerAdded(answer);
+
             // Notify every client
-            await this._hubContext
+            await this.hubContext
                 .Clients
                 .All
                 .AnswerCountChange(question.Id, question.Answers.Count);
@@ -88,7 +93,7 @@
             // Warning, this increment isnt thread-safe! Use Interlocked methods
             question.Score++;
 
-            await this._hubContext
+            await this.hubContext
                 .Clients
                 .All
                 .QuestionScoreChange(question.Id, question.Score);
@@ -105,7 +110,7 @@
             // Warning, this decrement isnt thread-safe! Use Interlocked methods
             question.Score--;
 
-            await this._hubContext
+            await this.hubContext
                 .Clients
                 .All
                 .QuestionScoreChange(question.Id, question.Score);
